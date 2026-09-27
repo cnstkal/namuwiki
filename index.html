@@ -43,7 +43,7 @@ h3.sub{font-size:22px;font-weight:bold;border-bottom:1px solid #eee;padding:3px 
 .secbtns{font-size:15px;color:#999;font-weight:normal;display:flex;gap:8px;}
 .secbtns span{cursor:pointer;}
 .secbtns span:hover{color:var(--teal);}
-.info-paren{font-size:.78em !important;color:#222 !important;font-weight:400;} .edu-line{display:block;line-height:1.45;} .edu-school,.edu-status{outline:none;} .edu-school{color:inherit;} .edu-status{font-size:.78em;color:#222;} .birth-age-wrap{color:#222 !important;font-size:1em !important;font-weight:400;} .birth-age-wrap .birth-age{font-size:1em !important;color:#222 !important;font-weight:400;} .sec-body{padding:10px 6px;font-size:19px;line-height:1.75;min-height:34px;outline:none;white-space:pre-wrap;}
+.info-paren{font-size:.78em !important;color:#222 !important;font-weight:400;} .name-full{font-size:1em !important;color:inherit !important;font-weight:inherit;} .edu-line{display:block;line-height:1.45;} .edu-school,.edu-status{outline:none;} .edu-school{color:inherit;} .edu-status{font-size:.78em;color:#222;} .birth-age-wrap{color:#222 !important;font-size:1em !important;font-weight:400;} .birth-age-wrap .birth-age{font-size:1em !important;color:#222 !important;font-weight:400;} .sec-body{padding:10px 6px;font-size:19px;line-height:1.75;min-height:34px;outline:none;white-space:pre-wrap;}
 .sec-body:empty:before{content:"내용을 입력하세요...";color:#aaa;}
 .collapsed{display:none;}
 .footnotes{margin-top:30px;border-top:1px solid var(--line);padding-top:10px;font-size:17px;color:#555;}
@@ -318,7 +318,7 @@ function blankDoc(){
     nbMembersList:['멤버1','멤버2','멤버3','멤버4'],
     name:'새 캐릭터', nameEn:'별칭 / 영문명',
     info:{
-      name:'홍길동 (洪吉童)',
+      name:'홍길동 (洪吉童), Hong Gil-dong',
       birth:'2002년 3월 2일 (24세)',
       from:'서울특별시 성북구',
       nation:'대한민국',
@@ -544,6 +544,17 @@ function updateBirthAge(td){
 
 function styleInfoParentheses(td){
   if(!td) return;
+
+  if(td.dataset.key==='name'){
+    const raw=td.textContent.trim();
+    td.innerHTML='';
+    const span=document.createElement('span');
+    span.className='name-full';
+    span.contentEditable='true';
+    span.textContent=raw || '홍길동 (洪吉童), Hong Gil-dong';
+    td.appendChild(span);
+    return;
+  }
 
   if(td.dataset.key==='edu'){
     // 이미 정상적인 학력 구조라면 입력 중에는 절대 다시 만들지 않는다.
