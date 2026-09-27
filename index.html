@@ -283,6 +283,7 @@ function saveList(l){localStorage.setItem(LIST_KEY, JSON.stringify(l));}
 function refreshCharSelect(){
   const list=loadList();
   const sel=document.getElementById('charSelect');
+  if(!sel) return;
   sel.innerHTML='';
   Object.keys(list).forEach(id=>{
     const o=document.createElement('option');
@@ -364,7 +365,6 @@ function deleteChar(){
 function toggleLock(){ locked=!locked; applyLock(); persist(); }
 function applyLock(){
   document.querySelectorAll('[contenteditable]').forEach(el=>el.contentEditable=!locked);
-  document.getElementById('lockBtn').innerHTML = locked? '<svg class="ic"><use href="#i-lock"/></svg> 편집 보호됨(클릭 해제)':'<svg class="ic"><use href="#i-unlock"/></svg> 편집 가능';
   document.getElementById('lockIco').innerHTML = '<svg class="ic"><use href="#i-lock"/></svg>';
 }
 
@@ -374,12 +374,10 @@ function setDoc(mut){
   mut(list[currentId]);
   list[currentId].editedAt=new Date().toLocaleString('ko-KR');
   saveList(list);
-  document.getElementById('editedAt').textContent='최근 수정 시각: '+list[currentId].editedAt;
 }
 
 function render(){
   const d=getDoc(); if(!d) return;
-  document.getElementById('pageTitle').innerHTML=d.pageTitle||'문서 제목';
   if(d.catbar) document.getElementById('catbar').innerHTML=d.catbar;
   document.getElementById('lockText').textContent=d.lockText||'편집 보호된 문서입니다.';
   document.getElementById('nbLogo').innerHTML=d.nbLogo||'GROUP';
@@ -388,7 +386,6 @@ function render(){
   renderMembers(d.nbMembersList||['멤버1','멤버2']);
   document.getElementById('charname').innerHTML=d.name;
   document.getElementById('charname-en').innerHTML=d.nameEn;
-  document.getElementById('editedAt').textContent='최근 수정 시각: '+(d.editedAt||'-');
   locked=!!d.locked;
   const pb=document.getElementById('photoBox');
   pb.innerHTML = d.photo? '<img src="'+d.photo+'">' : '<span style="color:#999;font-size:13px;">클릭해서 사진 업로드</span>';
@@ -705,7 +702,7 @@ function collectFromDOM(){
     }
   }
   return {
-    pageTitle:document.getElementById('pageTitle').innerHTML,
+    pageTitle:(getDoc()&&getDoc().pageTitle)||'',
     catbar:document.getElementById('catbar').innerHTML,
     lockText:document.getElementById('lockText').textContent,
     nbLogo:document.getElementById('nbLogo').innerHTML,
