@@ -39,16 +39,16 @@ table.info td{padding:9px 10px;border-bottom:1px solid var(--line);background:#f
 .rowbtns button{font-size:10px;padding:2px 5px;cursor:pointer;}
 article{clear:both;}
 #sections{counter-reset:section;}
-h2.sec{font-size:32px;font-weight:800;color:#202124;border-bottom:2px solid #ddd;padding:8px 0 10px;margin:38px 0 0;display:flex;justify-content:flex-start;align-items:center;gap:14px;line-height:1.2;}
+h2.sec{font-size:36px;font-weight:800;color:#202124;border-bottom:2px solid #ddd;padding:8px 0 10px;margin:38px 0 0;display:flex;justify-content:flex-start;align-items:center;gap:14px;line-height:1.2;}
 h2.sec .txt::before{counter-increment:section;content:counter(section) ". ";color:#1976d2;font-weight:800;}
-h3.sub{font-size:22px;font-weight:bold;border-bottom:1px solid #eee;padding:3px 2px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;color:#333;}
+h3.sub{font-size:25px;font-weight:bold;border-bottom:1px solid #eee;padding:3px 2px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;color:#333;}
 .txt[contenteditable]{outline:none;}
-.secbtns{font-size:30px;color:#666;font-weight:normal;display:flex;gap:8px;order:-1;flex:0 0 auto;line-height:1;}
+ .secbtns{font-size:28px;color:#666;font-weight:normal;display:flex;gap:0;order:-1;flex:0 0 30px;line-height:1;height:36px;align-items:center;justify-content:center;transform:translateY(1px);
 .secbtns span{cursor:pointer;}
 .secbtns span:hover{color:#333;}
 .secbtns span+span{display:none;}
-.sec-body{padding:14px 0 18px;font-size:19px;line-height:1.9;min-height:34px;outline:none;white-space:pre-wrap;}
-.info-paren{font-size:.78em !important;color:#222 !important;font-weight:400;} .name-full{font-size:1em !important;color:inherit !important;font-weight:inherit;} .edu-line{display:block;line-height:1.45;} .edu-school,.edu-status{outline:none;} .edu-school{color:inherit;} .edu-status{font-size:.78em;color:#222;} .birth-age-wrap{color:#222 !important;font-size:1em !important;font-weight:400;} .birth-age-wrap .birth-age{font-size:1em !important;color:#222 !important;font-weight:400;} .sec-body{padding:10px 6px;font-size:19px;line-height:1.75;min-height:34px;outline:none;white-space:pre-wrap;}
+ .sec-body{padding:16px 0 20px;font-size:22px;line-height:1.9;min-height:34px;outline:none;white-space:pre-wrap;}
+.info-paren{font-size:.78em !important;color:#222 !important;font-weight:400;} .name-full{font-size:1em !important;color:inherit !important;font-weight:inherit;} .edu-line{display:block;line-height:1.45;} .edu-school,.edu-status{outline:none;} .edu-school{color:inherit;} .edu-status{font-size:.78em;color:#222;} .birth-age-wrap{color:#222 !important;font-size:1em !important;font-weight:400;} .birth-age-wrap .birth-age{font-size:1em !important;color:#222 !important;font-weight:400;}  .sec-body{padding:16px 0 20px;font-size:22px;line-height:1.9;min-height:34px;outline:none;white-space:pre-wrap;}
 .sec-body:empty:before{content:"내용을 입력하세요...";color:#aaa;}\n.sec-body .body-line{display:block;position:relative;padding-left:28px;min-height:1.9em;}
 .sec-body .body-line::before{content:"•";position:absolute;left:6px;top:0;font-weight:700;}
 
