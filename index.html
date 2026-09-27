@@ -179,22 +179,6 @@ input,textarea,select,[contenteditable="true"]{-webkit-text-size-adjust:100%;fon
 <div class="pagegrid">
   <div class="pagemain">
     <article id="captureArea">
-      <div class="titleline">
-        <span class="txt" contenteditable id="pageTitle">문서 제목</span>
-        <span class="num">50</span>
-        <span class="title-icons">
-          <span><svg class="ic"><use href="#i-star"/></svg></span><span><svg class="ic"><use href="#i-user"/></svg> 편집 요청</span><span><svg class="ic"><use href="#i-chat"/></svg> 토론</span><span><svg class="ic"><use href="#i-history"/></svg> 역사</span><span><svg class="ic"><use href="#i-more"/></svg></span>
-        </span>
-      </div>
-
-      <div class="pagebar">
-        <span id="editedAt">최근 수정 시각: -</span>
-        <div style="display:flex;gap:6px;">
-          <button onclick="toggleLock()" id="lockBtn"><svg class="ic"><use href="#i-unlock"/></svg> 편집 가능</button>
-          <button onclick="if(confirm('이 문서를 삭제할까요?'))deleteChar()">문서 삭제</button>
-        </div>
-      </div>
-
       <div class="catbar" id="catbar"><span style="color:#555;">분류:</span> <b contenteditable style="color:#3b7dd8;">원빈(RIIZE)</b><span class="sep">|</span><b contenteditable style="color:#3b7dd8;">RIIZE</b><span class="sep">|</span><b contenteditable style="color:#3b7dd8;">한국 남가수</b><span class="sep">|</span><b contenteditable style="color:#3b7dd8;">2002년 출생</b></div>
       <div class="lockline"><span class="ico" id="lockIco"><svg class="ic"><use href="#i-lock"/></svg></span><span id="lockText">편집 보호된 문서입니다.</span></div>
 
