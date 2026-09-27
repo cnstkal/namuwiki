@@ -43,7 +43,7 @@ h3.sub{font-size:22px;font-weight:bold;border-bottom:1px solid #eee;padding:3px 
 .secbtns{font-size:15px;color:#999;font-weight:normal;display:flex;gap:8px;}
 .secbtns span{cursor:pointer;}
 .secbtns span:hover{color:var(--teal);}
-.info-paren{font-size:.78em !important;color:#222 !important;font-weight:400;} .edu-status{font-size:.78em;color:#222;outline:none;} .edu-school{outline:none;} .birth-age{font-size:1em !important;color:#222 !important;font-weight:400;} .sec-body{padding:10px 6px;font-size:19px;line-height:1.75;min-height:34px;outline:none;white-space:pre-wrap;}
+.info-paren{font-size:.78em !important;color:#222 !important;font-weight:400;} .edu-status{font-size:.78em;color:#222;outline:none;} .edu-school{outline:none;} .birth-age-wrap{color:#222 !important;font-size:1em !important;font-weight:400;} .birth-age-wrap .birth-age{font-size:1em !important;color:#222 !important;font-weight:400;} .sec-body{padding:10px 6px;font-size:19px;line-height:1.75;min-height:34px;outline:none;white-space:pre-wrap;}
 .sec-body:empty:before{content:"내용을 입력하세요...";color:#aaa;}
 .collapsed{display:none;}
 .footnotes{margin-top:30px;border-top:1px solid var(--line);padding-top:10px;font-size:17px;color:#555;}
@@ -528,13 +528,16 @@ function updateBirthAge(td){
 
   const dateText=y+'년 '+mo+'월 '+d+'일';
   td.innerHTML='';
-  td.appendChild(document.createTextNode(dateText+' ('));
+  const ageWrap=document.createElement('span');
+  ageWrap.className='birth-age-wrap';
+  ageWrap.appendChild(document.createTextNode(dateText+' ('));
   const ageSpan=document.createElement('span');
   ageSpan.className='birth-age';
   ageSpan.contentEditable='true';
   ageSpan.textContent=age+'세';
-  td.appendChild(ageSpan);
-  td.appendChild(document.createTextNode(')'));
+  ageWrap.appendChild(ageSpan);
+  ageWrap.appendChild(document.createTextNode(')'));
+  td.appendChild(ageWrap);
 }
 
 
