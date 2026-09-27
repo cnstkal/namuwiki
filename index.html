@@ -4,165 +4,423 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>자캐위키</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
-:root{--orange:#e39a1e;--bg:#fff;--text:#222;--line:#ddd;}
+:root{--orange:#e39a1e;--teal:#00a495;--bg:#fff;--text:#222;--line:#ddd;--panel:#f8f8f8;}
 *{box-sizing:border-box;}
-body{font-family:"Malgun Gothic",Apple SD Gothic Neo,sans-serif;background:var(--bg);color:var(--text);margin:0;padding-bottom:60px;}
-header{background:#00a495;color:#fff;padding:10px 16px;font-weight:bold;display:flex;justify-content:space-between;align-items:center;}
-header .title{font-size:18px;}
-.wrap{max-width:900px;margin:0 auto;padding:16px;}
-.namebar{background:var(--orange);color:#fff;text-align:center;padding:10px;font-size:22px;font-weight:bold;border-radius:2px 2px 0 0;}
-.namebar .sub{font-size:13px;font-weight:normal;opacity:.9;}
-.photo{width:100%;min-height:180px;background:#eee;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;}
-.photo img{max-width:100%;display:block;}
-.photo .ph-btn{position:absolute;bottom:8px;right:8px;background:rgba(0,0,0,.55);color:#fff;padding:4px 8px;font-size:12px;border-radius:4px;cursor:pointer;}
-table.info{width:100%;border-collapse:collapse;border:1px solid var(--orange);margin-bottom:20px;}
-table.info th{background:var(--orange);color:#fff;padding:8px;width:110px;text-align:center;font-size:13px;vertical-align:top;border:1px solid #fff2;}
-table.info td{padding:8px;border-bottom:1px solid var(--line);font-size:13px;background:#fffdf8;}
-table.info td[contenteditable],table.info th[contenteditable]{outline:none;}
-.rowbtns{display:flex;gap:4px;justify-content:center;margin:6px 0;}
-.rowbtns button{font-size:11px;padding:2px 6px;cursor:pointer;}
-h2.sec{font-size:19px;font-weight:bold;border-bottom:2px solid var(--orange);padding-bottom:4px;margin-top:28px;display:flex;justify-content:space-between;align-items:center;}
-h2.sec .del{font-size:11px;color:#999;cursor:pointer;font-weight:normal;}
-.sec-body{padding:10px 4px;font-size:14px;line-height:1.7;min-height:40px;outline:none;white-space:pre-wrap;}
+body{font-family:"Pretendard",Apple SD Gothic Neo,sans-serif;background:var(--bg);color:var(--text);margin:0;}
+a{color:#3b7dd8;cursor:pointer;text-decoration:none;} a:hover{text-decoration:underline;}
+.gnb{background:var(--teal);color:#fff;padding:8px 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;position:sticky;top:0;z-index:50;}
+.gnb .logo{font-weight:bold;font-size:16px;white-space:nowrap;}
+.gnb input{flex:1;min-width:120px;padding:6px 10px;border:none;border-radius:4px;font-size:13px;}
+.gnb button{background:#008f80;color:#fff;border:none;padding:6px 10px;border-radius:4px;cursor:pointer;font-size:12px;}
+.gnb button:hover{background:#007368;}
+.charselect{background:#008f80;color:#fff;border:1px solid #fff4;padding:5px 6px;border-radius:4px;font-size:12px;}
+.layout{display:flex;max-width:1200px;margin:0 auto;align-items:flex-start;}
+.sidebar{width:220px;flex-shrink:0;padding:14px 10px;font-size:13px;position:sticky;top:48px;}
+.sidebar h4{margin:0 0 6px;font-size:13px;color:#888;}
+.toc{border:1px solid var(--line);border-radius:4px;padding:8px 10px;background:var(--panel);}
+.toc div{margin:3px 0;}
+.toc .lv3{padding-left:12px;font-size:12px;}
+.wrap{flex:1;padding:16px;min-width:0;}
+.pagebar{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:10px;font-size:12px;color:#777;flex-wrap:wrap;gap:6px;}
+.pagebar button{font-size:11px;padding:3px 8px;border:1px solid var(--line);background:#fff;border-radius:4px;cursor:pointer;}
+.namebar{background:var(--orange);color:#fff;text-align:center;padding:10px;font-size:22px;font-weight:bold;border-radius:3px 3px 0 0;}
+.namebar .sub{font-size:13px;font-weight:normal;opacity:.9;margin-top:2px;}
+.infobox{float:right;width:300px;margin:0 0 10px 14px;border:2px solid var(--orange);}
+.photo{width:100%;aspect-ratio:3/4;background:#eee;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;cursor:pointer;}
+.photo img{width:100%;height:100%;object-fit:cover;display:block;}
+table.info{width:100%;border-collapse:collapse;font-size:12.5px;}
+table.info th{background:var(--orange);color:#fff;padding:6px;width:88px;text-align:center;vertical-align:top;border:1px solid #fff3;}
+table.info td{padding:6px;border-bottom:1px solid var(--line);background:#fffdf8;}
+.rowbtns{display:flex;gap:4px;justify-content:center;padding:4px;background:var(--panel);}
+.rowbtns button{font-size:10px;padding:2px 5px;cursor:pointer;}
+article{clear:both;}
+h2.sec{font-size:19px;font-weight:bold;border-bottom:2px solid var(--orange);padding:4px 2px;margin-top:26px;display:flex;justify-content:space-between;align-items:center;}
+h3.sub{font-size:16px;font-weight:bold;border-bottom:1px solid #eee;padding:3px 2px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;color:#333;}
+.txt[contenteditable]{outline:none;}
+.secbtns{font-size:11px;color:#999;font-weight:normal;display:flex;gap:8px;}
+.secbtns span{cursor:pointer;}
+.secbtns span:hover{color:var(--teal);}
+.sec-body{padding:8px 4px;font-size:14px;line-height:1.75;min-height:34px;outline:none;white-space:pre-wrap;}
 .sec-body:empty:before{content:"내용을 입력하세요...";color:#aaa;}
-.addbar{text-align:center;margin:20px 0;}
+.collapsed{display:none;}
+.footnotes{margin-top:30px;border-top:1px solid var(--line);padding-top:10px;font-size:12px;color:#555;}
+.gallery{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;}
+.gallery .g-item{width:110px;}
+.gallery img{width:110px;height:140px;object-fit:cover;border:1px solid var(--line);border-radius:3px;display:block;}
+.gallery .cap{font-size:11px;text-align:center;background:var(--orange);color:#fff;padding:2px;}
+.gallery .g-del{font-size:10px;text-align:center;color:#c0392b;cursor:pointer;}
+.addbar{text-align:center;margin:22px 0;}
 .addbar button{background:var(--orange);color:#fff;border:none;padding:8px 14px;border-radius:4px;cursor:pointer;font-size:13px;margin:0 4px;}
-.toolbar{position:fixed;bottom:0;left:0;right:0;background:#333;color:#fff;display:flex;gap:8px;justify-content:center;padding:8px;font-size:12px;}
-.toolbar button{background:#555;color:#fff;border:none;padding:6px 10px;border-radius:4px;cursor:pointer;}
-.toolbar button:hover{background:#00a495;}
+.addbar button.alt{background:#666;}
+.toolbar{position:fixed;bottom:0;left:0;right:0;background:#2c2c2c;color:#fff;display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:8px;font-size:12px;z-index:60;}
+.toolbar button,.toolbar label{background:#484848;color:#fff;border:none;padding:6px 10px;border-radius:4px;cursor:pointer;}
+.toolbar button:hover,.toolbar label:hover{background:var(--teal);}
+body{padding-bottom:58px;}
+mark.hl{background:#fff29e;}
+@media(max-width:820px){.sidebar{display:none;} .infobox{float:none;width:100%;margin:0 0 12px;}}
 [contenteditable]:focus{background:#fff8e5;}
-th[contenteditable]:focus, td[contenteditable]:focus{background:#fff8e5;}
+
+/* top namu-wiki-like header */
+.titleline{display:flex;align-items:center;gap:8px;padding:14px 4px 4px;font-size:24px;font-weight:bold;}
+.titleline .num{background:#eee;color:#888;font-size:12px;border-radius:50%;width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;}
+.catbar{border:1px solid var(--line);background:#fafafa;padding:6px 10px;font-size:12px;color:#555;margin:8px 0 6px;}
+.catbar b{color:#3b7dd8;cursor:pointer;font-weight:normal;}
+.catbar span.sep{color:#ccc;margin:0 4px;}
+.lockline{display:flex;align-items:center;gap:6px;font-size:13px;color:#444;margin-bottom:14px;}
+.lockline .ico{color:#888;}
+.lockline a{color:#3b7dd8;}
+.navbox{border:2px solid var(--orange);margin-bottom:4px;border-radius:8px;overflow:hidden;background:var(--orange);}
+.navbox .nb-head{background:var(--orange);color:#fff;display:flex;align-items:flex-end;justify-content:center;gap:10px;padding:10px 14px;}
+.navbox .nb-logo{font-weight:900;font-size:30px;font-style:italic;line-height:1;}
+.navbox .nb-divider{width:1px;align-self:stretch;background:#fff6;}
+.navbox .nb-title{line-height:1.2;text-align:left;}
+.navbox .nb-title .en{font-size:13px;display:block;}
+.navbox .nb-title .kr{font-size:16px;display:block;font-weight:bold;}
+.navbox .nb-members{display:flex;justify-content:space-around;padding:10px 4px;background:var(--orange);flex-wrap:wrap;}
+.navbox .nb-members div{font-size:12.5px;padding:3px 6px;color:#fff;cursor:pointer;}
+.navbox .nb-links{display:flex;text-align:center;border-top:1px solid #fff5;font-size:11.5px;}
+.navbox .nb-links div{flex:1;padding:6px 2px;border-right:1px solid #fff5;color:#fff;cursor:pointer;background:var(--orange);}
+.navbox .nb-links div:last-child{border-right:none;}
+.navbox .nb-links div:hover{background:#d68e1c;}
+.navwrap{margin-bottom:16px;}
 </style>
 </head>
 <body>
-<header><span class="title">📖 자캐위키</span><span id="clock" style="font-size:12px;font-weight:normal;"></span></header>
-<div class="wrap">
-  <div class="namebar">
-    <div contenteditable id="charname">이름을 입력하세요</div>
-    <div class="sub" contenteditable id="charname-en">Name (영문/부캐명 등)</div>
-  </div>
-  <div class="photo" id="photoBox">
-    <span style="color:#999;font-size:13px;">이미지를 클릭해 업로드</span>
-    <div class="ph-btn" onclick="document.getElementById('fileInput').click()">사진 변경</div>
-  </div>
-  <input type="file" id="fileInput" accept="image/*" style="display:none">
+<div class="gnb">
+  <span class="logo">📖 자캐위키</span>
+  <select class="charselect" id="charSelect" onchange="switchChar(this.value)"></select>
+  <button onclick="newChar()">+ 새 문서</button>
+  <input id="searchBox" placeholder="문서 내 검색" oninput="doSearch(this.value)">
+  <button onclick="clearSearch()">✕</button>
+</div>
 
-  <table class="info" id="infoTable">
-    <tr><th contenteditable>본명</th><td contenteditable>홍길동</td></tr>
-    <tr><th contenteditable>생일</th><td contenteditable>0000년 0월 0일</td></tr>
-    <tr><th contenteditable>출신</th><td contenteditable>서울특별시</td></tr>
-    <tr><th contenteditable>신체</th><td contenteditable>000cm | 00kg</td></tr>
-    <tr><th contenteditable>소속</th><td contenteditable>소속 단체/그룹</td></tr>
-    <tr><th contenteditable>포지션</th><td contenteditable>포지션</td></tr>
-    <tr><th contenteditable>MBTI</th><td contenteditable>XXXX</td></tr>
-    <tr><th contenteditable>별명</th><td contenteditable>별명들</td></tr>
-  </table>
-  <div class="rowbtns">
-    <button onclick="addRow()">+ 행 추가</button>
-    <button onclick="delRow()">- 마지막 행 삭제</button>
+<div class="layout">
+  <div class="sidebar">
+    <h4>목차</h4>
+    <div class="toc" id="toc"></div>
   </div>
 
-  <div id="sections"></div>
+  <div class="wrap">
+    <div class="pagebar">
+      <span id="editedAt">최근 수정 시각: -</span>
+      <div style="display:flex;gap:6px;">
+        <button onclick="toggleLock()" id="lockBtn">🔓 편집 가능</button>
+        <button onclick="if(confirm('이 문서를 삭제할까요?'))deleteChar()">문서 삭제</button>
+      </div>
+    </div>
 
-  <div class="addbar"><button onclick="addSection()">+ 문단 추가</button></div>
+    <article id="captureArea">
+      <div class="titleline"><span class="txt" contenteditable id="pageTitle">문서 제목</span></div>
+      <div class="catbar" id="catbar"><span style="color:#555;">분류:</span> <b contenteditable style="color:#3b7dd8;">원빈(RIIZE)</b><span class="sep">|</span><b contenteditable style="color:#3b7dd8;">RIIZE</b><span class="sep">|</span><b contenteditable style="color:#3b7dd8;">한국 남가수</b><span class="sep">|</span><b contenteditable style="color:#3b7dd8;">2002년 출생</b></div>
+      <div class="lockline"><span class="ico" id="lockIco">🔒</span><span id="lockText">편집 보호된 문서입니다.</span></div>
+
+      <div class="navwrap" id="navwrap">
+        <div class="navbox">
+          <div class="nb-head">
+            <span class="nb-logo" contenteditable id="nbLogo">GROUP</span>
+            <span class="nb-divider"></span>
+            <span class="nb-title"><span class="en" contenteditable id="nbTitleEn">GROUP NAME</span><span class="kr" contenteditable id="nbTitleKr">그룹명</span></span>
+          </div>
+          <div class="nb-members" id="nbMembers" contenteditable></div>
+          <div class="nb-links"><div contenteditable>한국 음반</div><div contenteditable>해외 음반</div><div contenteditable>기타 음반</div><div contenteditable>관련 문서</div></div>
+        </div>
+      </div>
+
+      <div class="namebar">
+        <div contenteditable id="charname">이름을 입력하세요</div>
+        <div class="sub" contenteditable id="charname-en">별칭 / 영문명 / 부제</div>
+      </div>
+
+      <div class="infobox">
+        <div class="photo" id="photoBox" onclick="document.getElementById('fileInput').click()">
+          <span style="color:#999;font-size:13px;">클릭해서 사진 업로드</span>
+        </div>
+        <input type="file" id="fileInput" accept="image/*" style="display:none">
+        <table class="info" id="infoTable"></table>
+        <div class="rowbtns"><button onclick="addRow()">+ 항목 추가</button><button onclick="delRow()">- 마지막 삭제</button></div>
+      </div>
+
+      <div id="sections"></div>
+
+      <div class="addbar">
+        <button onclick="addSection(2)">+ 큰 문단 추가</button>
+        <button class="alt" onclick="addSection(3)">+ 하위 문단 추가</button>
+        <button class="alt" onclick="addGallery()">+ 사진첩 추가</button>
+      </div>
+
+      <div class="footnotes"><b>각주</b>
+        <div id="fnlist" contenteditable style="margin-top:6px;"></div>
+      </div>
+    </article>
+  </div>
 </div>
 
 <div class="toolbar">
   <button onclick="saveData()">💾 저장</button>
-  <button onclick="exportHTML()">⬇ 내보내기(백업)</button>
-  <label style="background:#555;padding:6px 10px;border-radius:4px;cursor:pointer;">📂 불러오기<input type="file" id="importInput" accept="application/json" style="display:none"></label>
-  <button onclick="if(confirm('전체 내용을 초기화할까요?'))resetAll()">🗑 초기화</button>
+  <button onclick="exportImage()">🖼 이미지로 저장</button>
+  <button onclick="exportHTML()">⬇ 백업(JSON)</button>
+  <label>📂 불러오기<input type="file" id="importInput" accept="application/json" style="display:none"></label>
+  <button onclick="printPage()">🖨 인쇄/PDF</button>
+  <button onclick="if(confirm('이 문서의 모든 내용을 초기화할까요?'))resetCurrent()">🗑 초기화</button>
 </div>
 
 <script>
-const STORAGE_KEY='jacae-wiki-data';
-const secWrap=document.getElementById('sections');
+const LIST_KEY='jacae-wiki-list';
+let currentId=null, locked=false;
+const defaultInfo=[['본명','이름'],['생일','0000년 0월 0일'],['출신','-'],['신체','-'],['소속','-'],['포지션','-'],['MBTI','-'],['별명','-']];
 
-function makeSection(title, num, body){
-  const h=document.createElement('h2'); h.className='sec';
-  const t=document.createElement('span'); t.contentEditable=true; t.textContent=(num?num+'. ':'')+title;
-  const d=document.createElement('span'); d.className='del'; d.textContent='삭제'; d.onclick=()=>{h.remove(); b.remove();};
-  h.appendChild(t); h.appendChild(d);
-  const b=document.createElement('div'); b.className='sec-body'; b.contentEditable=true; b.textContent=body||'';
-  secWrap.appendChild(h); secWrap.appendChild(b);
+function uid(){return 'c'+Date.now()+Math.random().toString(36).slice(2,6);}
+function loadList(){ try{return JSON.parse(localStorage.getItem(LIST_KEY))||{};}catch(e){return {};} }
+function saveList(l){localStorage.setItem(LIST_KEY, JSON.stringify(l));}
+
+function refreshCharSelect(){
+  const list=loadList();
+  const sel=document.getElementById('charSelect');
+  sel.innerHTML='';
+  Object.keys(list).forEach(id=>{
+    const o=document.createElement('option');
+    o.value=id; o.textContent=(list[id].name||'').replace(/<[^>]+>/g,'') || '(이름 없음)';
+    if(id===currentId) o.selected=true;
+    sel.appendChild(o);
+  });
 }
 
-function addSection(){
-  const n=secWrap.querySelectorAll('h2.sec').length+1;
-  const title=prompt('문단 제목을 입력하세요','새 문단')||'새 문단';
-  makeSection(title, n, '');
+function blankDoc(){
+  return {
+    pageTitle:'문서 제목',
+    catbar:'<span style="color:#555;">분류:</span> <b contenteditable style="color:#3b7dd8;">원빈(RIIZE)</b><span class="sep">|</span><b contenteditable style="color:#3b7dd8;">RIIZE</b><span class="sep">|</span><b contenteditable style="color:#3b7dd8;">한국 남가수</b><span class="sep">|</span><b contenteditable style="color:#3b7dd8;">2002년 출생</b>',
+    lockText:'편집 보호된 문서입니다.',
+    nbLogo:'GROUP', nbTitleKr:'그룹명', nbTitleEn:'GROUP NAME',
+    nbMembers:'멤버1&nbsp;&nbsp;&nbsp;멤버2&nbsp;&nbsp;&nbsp;멤버3&nbsp;&nbsp;&nbsp;멤버4',
+    name:'새 캐릭터', nameEn:'별칭 / 영문명',
+    rows:defaultInfo.map(r=>r.slice()),
+    photo:'',
+    editedAt:new Date().toLocaleString('ko-KR'),
+    locked:false,
+    secs:[
+      {lvl:2,title:'개요',body:'이 캐릭터에 대한 간단한 소개를 적어주세요.'},
+      {lvl:2,title:'상세',body:''},
+      {lvl:3,title:'외모',body:''},
+      {lvl:3,title:'성격',body:''},
+      {lvl:2,title:'작중 행적',body:''},
+      {lvl:2,title:'여담',body:''}
+    ],
+    galleries:[],
+    footnotes:''
+  };
 }
 
+function newChar(){
+  const list=loadList();
+  const id=uid();
+  list[id]=blankDoc();
+  saveList(list);
+  currentId=id;
+  localStorage.setItem('jacae-current', id);
+  render();
+  refreshCharSelect();
+}
+
+function switchChar(id){
+  currentId=id;
+  localStorage.setItem('jacae-current', id);
+  render();
+}
+
+function deleteChar(){
+  const list=loadList();
+  delete list[currentId];
+  const ids=Object.keys(list);
+  saveList(list);
+  if(ids.length){ currentId=ids[0]; localStorage.setItem('jacae-current', currentId); render(); refreshCharSelect(); }
+  else { newChar(); }
+}
+
+function toggleLock(){ locked=!locked; applyLock(); persist(); }
+function applyLock(){
+  document.querySelectorAll('[contenteditable]').forEach(el=>el.contentEditable=!locked);
+  document.getElementById('lockBtn').textContent = locked? '🔒 편집 보호됨(클릭 해제)':'🔓 편집 가능';
+  document.getElementById('lockIco').textContent = locked? '🔒':'🔓';
+}
+
+function getDoc(){ const list=loadList(); return list[currentId]; }
+function setDoc(mut){
+  const list=loadList(); if(!list[currentId]) return;
+  mut(list[currentId]);
+  list[currentId].editedAt=new Date().toLocaleString('ko-KR');
+  saveList(list);
+  document.getElementById('editedAt').textContent='최근 수정 시각: '+list[currentId].editedAt;
+}
+
+function render(){
+  const d=getDoc(); if(!d) return;
+  document.getElementById('pageTitle').innerHTML=d.pageTitle||'문서 제목';
+  if(d.catbar) document.getElementById('catbar').innerHTML=d.catbar;
+  document.getElementById('lockText').textContent=d.lockText||'편집 보호된 문서입니다.';
+  document.getElementById('nbLogo').innerHTML=d.nbLogo||'GROUP';
+  document.getElementById('nbTitleKr').innerHTML=d.nbTitleKr||'그룹명';
+  document.getElementById('nbTitleEn').innerHTML=d.nbTitleEn||'GROUP NAME';
+  document.getElementById('nbMembers').innerHTML=d.nbMembers||'';
+  document.getElementById('charname').innerHTML=d.name;
+  document.getElementById('charname-en').innerHTML=d.nameEn;
+  document.getElementById('editedAt').textContent='최근 수정 시각: '+(d.editedAt||'-');
+  locked=!!d.locked;
+  const pb=document.getElementById('photoBox');
+  pb.innerHTML = d.photo? '<img src="'+d.photo+'">' : '<span style="color:#999;font-size:13px;">클릭해서 사진 업로드</span>';
+
+  const table=document.getElementById('infoTable'); table.innerHTML='';
+  (d.rows||[]).forEach(r=>{
+    const tr=document.createElement('tr');
+    const th=document.createElement('th'); th.contentEditable=true; th.innerHTML=r[0];
+    const td=document.createElement('td'); td.contentEditable=true; td.innerHTML=r[1];
+    tr.appendChild(th); tr.appendChild(td); table.appendChild(tr);
+  });
+
+  const secWrap=document.getElementById('sections'); secWrap.innerHTML='';
+  (d.secs||[]).forEach(s=>renderSection(secWrap,s));
+  (d.galleries||[]).forEach(g=>renderGallery(secWrap,g));
+
+  document.getElementById('fnlist').innerHTML = d.footnotes || '<span style="color:#aaa;">본문에 [1] [2]처럼 적고, 여기에 각주 설명을 직접 적어보세요.</span>';
+
+  applyLock();
+  buildTOC();
+}
+
+function renderSection(wrap, s){
+  const tag = s.lvl===3?'h3':'h2';
+  const h=document.createElement(tag); h.className = s.lvl===3?'sub':'sec';
+  const t=document.createElement('span'); t.className='txt'; t.contentEditable=true; t.textContent=s.title;
+  const btns=document.createElement('span'); btns.className='secbtns';
+  const foldBtn=document.createElement('span'); foldBtn.textContent='▾';
+  const delBtn=document.createElement('span'); delBtn.textContent='삭제';
+  btns.appendChild(foldBtn); btns.appendChild(delBtn);
+  h.appendChild(t); h.appendChild(btns);
+  const b=document.createElement('div'); b.className='sec-body'; b.contentEditable=true; b.innerHTML=s.body||'';
+  foldBtn.onclick=(e)=>{e.stopPropagation(); b.classList.toggle('collapsed'); foldBtn.textContent = b.classList.contains('collapsed')?'▸':'▾';};
+  delBtn.onclick=(e)=>{e.stopPropagation(); if(confirm('이 문단을 삭제할까요?')){h.remove(); b.remove(); persist();}};
+  wrap.appendChild(h); wrap.appendChild(b);
+}
+
+function renderGallery(wrap, g){
+  const h=document.createElement('h3'); h.className='sub';
+  const t=document.createElement('span'); t.className='txt'; t.contentEditable=true; t.textContent=g.title||'사진첩';
+  const btns=document.createElement('span'); btns.className='secbtns';
+  const addBtn=document.createElement('span'); addBtn.textContent='+ 사진';
+  const delBtn=document.createElement('span'); delBtn.textContent='삭제';
+  btns.appendChild(addBtn); btns.appendChild(delBtn);
+  h.appendChild(t); h.appendChild(btns);
+  const gal=document.createElement('div'); gal.className='gallery';
+  (g.items||[]).forEach(it=>gal.appendChild(makeGItem(it.src, it.cap)));
+  addBtn.onclick=()=>{
+    const inp=document.createElement('input'); inp.type='file'; inp.accept='image/*';
+    inp.onchange=e=>{
+      const f=e.target.files[0]; if(!f)return;
+      const r=new FileReader();
+      r.onload=ev=>{ gal.appendChild(makeGItem(ev.target.result,'캡션')); persist(); };
+      r.readAsDataURL(f);
+    };
+    inp.click();
+  };
+  delBtn.onclick=()=>{ if(confirm('사진첩을 삭제할까요?')){h.remove(); gal.remove(); persist();} };
+  wrap.appendChild(h); wrap.appendChild(gal);
+}
+function makeGItem(src,cap){
+  const box=document.createElement('div'); box.className='g-item';
+  box.innerHTML='<img src="'+src+'"><div class="cap" contenteditable>'+(cap||'')+'</div><div class="g-del">삭제</div>';
+  box.querySelector('.g-del').onclick=()=>{ box.remove(); persist(); };
+  return box;
+}
+
+function addSection(lvl){
+  const title=prompt(lvl===2?'큰 문단 제목':'하위 문단 제목', lvl===2?'새 문단':'새 하위문단')||'새 문단';
+  renderSection(document.getElementById('sections'), {lvl:lvl,title:title,body:''});
+  persist();
+}
+function addGallery(){
+  const title=prompt('사진첩 제목','사진첩')||'사진첩';
+  renderGallery(document.getElementById('sections'), {title:title, items:[]});
+  persist();
+}
 function addRow(){
   const tr=document.createElement('tr');
   tr.innerHTML='<th contenteditable>항목</th><td contenteditable>내용</td>';
   document.getElementById('infoTable').appendChild(tr);
+  persist();
 }
 function delRow(){
   const t=document.getElementById('infoTable');
   if(t.rows.length>1) t.deleteRow(-1);
+  persist();
 }
 
 document.getElementById('fileInput').addEventListener('change', function(e){
   const f=e.target.files[0]; if(!f) return;
   const r=new FileReader();
-  r.onload=ev=>{
-    document.getElementById('photoBox').innerHTML='<img src="'+ev.target.result+'"><div class="ph-btn" onclick="document.getElementById(\'fileInput\').click()">사진 변경</div>';
-  };
+  r.onload=ev=>{ document.getElementById('photoBox').innerHTML='<img src="'+ev.target.result+'">'; persist(); };
   r.readAsDataURL(f);
 });
 
-function collect(){
+function collectFromDOM(){
   const rows=[...document.querySelectorAll('#infoTable tr')].map(tr=>[tr.children[0].innerHTML, tr.children[1].innerHTML]);
-  const secs=[]; const hs=[...secWrap.querySelectorAll('h2.sec')]; const bs=[...secWrap.querySelectorAll('.sec-body')];
-  hs.forEach((h,i)=>secs.push({title:h.querySelector('span').innerHTML, body:bs[i].innerHTML}));
   const img=document.querySelector('#photoBox img');
+  const secs=[]; const galleries=[];
+  const kids=[...document.getElementById('sections').children];
+  for(let i=0;i<kids.length;i++){
+    const el=kids[i];
+    if(el.tagName==='H2' && el.classList.contains('sec')){
+      const body=kids[i+1]; secs.push({lvl:2,title:el.querySelector('.txt').textContent, body:body?body.innerHTML:''});
+    } else if(el.tagName==='H3' && el.classList.contains('sub')){
+      const next=kids[i+1];
+      if(next && next.classList.contains('gallery')){
+        const items=[...next.querySelectorAll('.g-item')].map(gi=>({src:gi.querySelector('img').src, cap:gi.querySelector('.cap').textContent}));
+        galleries.push({title:el.querySelector('.txt').textContent, items});
+      } else {
+        secs.push({lvl:3,title:el.querySelector('.txt').textContent, body:next?next.innerHTML:''});
+      }
+    }
+  }
   return {
+    pageTitle:document.getElementById('pageTitle').innerHTML,
+    catbar:document.getElementById('catbar').innerHTML,
+    lockText:document.getElementById('lockText').textContent,
+    nbLogo:document.getElementById('nbLogo').innerHTML,
+    nbTitleKr:document.getElementById('nbTitleKr').innerHTML,
+    nbTitleEn:document.getElementById('nbTitleEn').innerHTML,
+    nbMembers:document.getElementById('nbMembers').innerHTML,
     name:document.getElementById('charname').innerHTML,
     nameEn:document.getElementById('charname-en').innerHTML,
     photo: img?img.src:'',
-    rows, secs
+    rows, secs, galleries,
+    footnotes: document.getElementById('fnlist').innerHTML,
+    locked: locked
   };
 }
 
-function saveData(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(collect()));
-  alert('저장되었습니다.');
+function persist(){
+  if(!currentId) return;
+  const data=collectFromDOM();
+  setDoc(d=>Object.assign(d,data));
+  refreshCharSelect();
+  buildTOC();
 }
+function saveData(){ persist(); alert('저장되었습니다.'); }
 
-function loadData(){
-  const raw=localStorage.getItem(STORAGE_KEY);
-  if(!raw) { addSection.skip=true; defaultSections(); return; }
-  try{
-    const d=JSON.parse(raw);
-    document.getElementById('charname').innerHTML=d.name||'';
-    document.getElementById('charname-en').innerHTML=d.nameEn||'';
-    if(d.photo) document.getElementById('photoBox').innerHTML='<img src="'+d.photo+'"><div class="ph-btn" onclick="document.getElementById(\'fileInput\').click()">사진 변경</div>';
-    const table=document.getElementById('infoTable'); table.innerHTML='';
-    (d.rows||[]).forEach(r=>{
-      const tr=document.createElement('tr');
-      tr.innerHTML='<th contenteditable>'+r[0]+'</th><td contenteditable>'+r[1]+'</td>';
-      table.appendChild(tr);
-    });
-    secWrap.innerHTML='';
-    (d.secs||[]).forEach((s,i)=>makeSection(s.title.replace(/^\d+\.\s*/,''), i+1, ''));
-    // restore bodies with HTML (allow line breaks)
-    const bs=[...secWrap.querySelectorAll('.sec-body')];
-    (d.secs||[]).forEach((s,i)=>bs[i].innerHTML=s.body);
-  }catch(e){ defaultSections(); }
-}
-
-function defaultSections(){
-  secWrap.innerHTML='';
-  makeSection('개요',1,'이 캐릭터에 대한 간단한 소개를 적어주세요.');
-  makeSection('상세',2,'외모, 성격 등 자세한 설명을 적어주세요.');
-  makeSection('작중 행적',3,'');
-  makeSection('여담',4,'');
+function buildTOC(){
+  const toc=document.getElementById('toc'); toc.innerHTML='';
+  let n2=0,n3=0;
+  [...document.getElementById('sections').children].forEach(el=>{
+    if(el.tagName==='H2'){ n2++; n3=0; const t=el.querySelector('.txt'); if(t){ const div=document.createElement('div'); div.textContent=n2+'. '+t.textContent; toc.appendChild(div);} }
+    if(el.tagName==='H3'){ n3++; const t=el.querySelector('.txt'); if(t){ const div=document.createElement('div'); div.className='lv3'; div.textContent=n2+'.'+n3+' '+t.textContent; toc.appendChild(div);} }
+  });
+  if(!toc.children.length) toc.innerHTML='<div style="color:#aaa;">문단이 없습니다.</div>';
 }
 
 function exportHTML(){
-  const data=JSON.stringify(collect(),null,2);
+  persist();
+  const data=JSON.stringify({[currentId]: getDoc()}, null, 2);
   const blob=new Blob([data],{type:'application/json'});
   const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
   a.download=(document.getElementById('charname').textContent.trim()||'character')+'.json';
@@ -173,27 +431,75 @@ document.getElementById('importInput').addEventListener('change', function(e){
   const f=e.target.files[0]; if(!f) return;
   const r=new FileReader();
   r.onload=ev=>{
-    localStorage.setItem(STORAGE_KEY, ev.target.result);
-    loadData();
-    alert('불러왔습니다.');
+    try{
+      const obj=JSON.parse(ev.target.result);
+      const list=loadList();
+      let lastId=currentId;
+      Object.keys(obj).forEach(k=>{ const id=uid(); list[id]=obj[k]; lastId=id; });
+      saveList(list);
+      currentId=lastId;
+      localStorage.setItem('jacae-current', currentId);
+      render(); refreshCharSelect();
+      alert('불러왔습니다.');
+    }catch(err){ alert('파일을 읽을 수 없습니다.'); }
   };
   r.readAsText(f);
 });
 
-function resetAll(){
-  localStorage.removeItem(STORAGE_KEY);
-  location.reload();
+function resetCurrent(){
+  const list=loadList();
+  list[currentId]=blankDoc();
+  saveList(list);
+  render();
+}
+function printPage(){ window.print(); }
+
+function exportImage(){
+  persist();
+  document.querySelectorAll('.sec-body.collapsed').forEach(el=>el.classList.remove('__wasCollapsed')&&0);
+  const target=document.getElementById('captureArea');
+  const btn=event.target; const old=btn.textContent; btn.textContent='생성 중...'; btn.disabled=true;
+  html2canvas(target,{scale:3, useCORS:true, backgroundColor:'#ffffff'}).then(canvas=>{
+    const a=document.createElement('a');
+    a.href=canvas.toDataURL('image/png',1.0);
+    a.download=(document.getElementById('charname').textContent.trim()||'character')+'.png';
+    a.click();
+    btn.textContent=old; btn.disabled=false;
+  }).catch(err=>{ alert('이미지 생성에 실패했습니다: '+err); btn.textContent=old; btn.disabled=false; });
 }
 
-function tickClock(){
-  document.getElementById('clock').textContent=new Date().toLocaleString('ko-KR');
+function doSearch(q){
+  document.querySelectorAll('mark.hl').forEach(m=>{ const p=m.parentNode; p.replaceChild(document.createTextNode(m.textContent), m); p.normalize(); });
+  if(!q) return;
+  const walker=document.createTreeWalker(document.getElementById('sections'), NodeFilter.SHOW_TEXT);
+  const nodes=[]; let n; while(n=walker.nextNode()) nodes.push(n);
+  nodes.forEach(node=>{
+    const idx=node.textContent.toLowerCase().indexOf(q.toLowerCase());
+    if(idx<0) return;
+    const range=document.createRange(); range.setStart(node, idx); range.setEnd(node, idx+q.length);
+    const mark=document.createElement('mark'); mark.className='hl';
+    try{ range.surroundContents(mark); }catch(e){}
+  });
+  const first=document.querySelector('mark.hl');
+  if(first) first.scrollIntoView({behavior:'smooth',block:'center'});
 }
-setInterval(tickClock,1000); tickClock();
+function clearSearch(){ document.getElementById('searchBox').value=''; doSearch(''); }
 
-loadData();
-// autosave every change
-document.body.addEventListener('input', ()=>{ clearTimeout(window._t); window._t=setTimeout(saveData_silent,800); });
-function saveData_silent(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(collect())); }
+document.addEventListener('input', (e)=>{
+  if(e.target.closest('[contenteditable]')){
+    clearTimeout(window._t); window._t=setTimeout(persist, 700);
+  }
+});
+
+(function init(){
+  const list=loadList();
+  let ids=Object.keys(list);
+  if(!ids.length){ const id=uid(); list[id]=blankDoc(); saveList(list); ids=[id]; }
+  currentId = localStorage.getItem('jacae-current') || ids[0];
+  if(!list[currentId]) currentId=ids[0];
+  refreshCharSelect();
+  render();
+})();
 </script>
 </body>
 </html>
