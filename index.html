@@ -325,7 +325,7 @@ function blankDoc(){
       clan:'남양 홍씨',
       body:'176cm | 58kg | AB형',
       family:'아버지, 어머니, 동생',
-      edu:'○○고등학교 (졸업)',
+      edu:'초등학교 (졸업)',
       religion:'무교',
       agency:'○○엔터테인먼트',
       group:'그룹명',
@@ -658,7 +658,7 @@ document.getElementById('fileInput').addEventListener('change', function(e){
 function collectFromDOM(){
   const prevInfo=(getDoc()&&getDoc().info)||{};
   const info=Object.assign({}, prevInfo);
-  document.querySelectorAll('#infoTable td[data-key]').forEach(td=>{ if(td.dataset.key==='birth') updateBirthAge(td); else styleInfoParentheses(td); info[td.dataset.key]=td.innerHTML; });
+  document.querySelectorAll('#infoTable td[data-key]').forEach(td=>{ if(td.dataset.key==='birth') updateBirthAge(td); else { if(td.dataset.key==='edu' && !td.querySelector('.edu-school')) styleInfoParentheses(td); else if(td.dataset.key!=='edu') styleInfoParentheses(td); } info[td.dataset.key]=td.innerHTML; });
   const optOn=getDoc()?Object.assign({},getDoc().optOn):{};
   const img=document.querySelector('#photoBox img');
   const secs=[]; const galleries=[];
@@ -781,6 +781,27 @@ function doSearch(q){
 }
 function clearSearch(){ document.getElementById('searchBox').value=''; doSearch(''); }
 
+document.addEventListener('keydown',(e)=>{
+  const td=e.target.closest('#infoTable td[data-key]');
+  if(!td || td.dataset.key!=='edu' || e.key!=='Enter') return;
+  e.preventDefault();
+  const br=document.createElement('br');
+  const school=document.createElement('span');
+  school.className='edu-school';
+  school.contentEditable='true';
+  school.textContent='초등학교';
+  const open=document.createTextNode(' (');
+  const status=document.createElement('span');
+  status.className='edu-status';
+  status.contentEditable='true';
+  status.textContent='졸업';
+  const close=document.createTextNode(')');
+  td.appendChild(br); td.appendChild(school); td.appendChild(open); td.appendChild(status); td.appendChild(close);
+  const range=document.createRange();
+  range.selectNodeContents(school); range.collapse(false);
+  const sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+  persist();
+});
 document.addEventListener('input', (e)=>{
   if(e.target.closest('#infoTable td[data-key]')) { const td=e.target.closest('#infoTable td[data-key]'); if(td.dataset.key==='birth') updateBirthAge(td); else styleInfoParentheses(td); }
 
