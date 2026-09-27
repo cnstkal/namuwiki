@@ -43,7 +43,7 @@ h3.sub{font-size:22px;font-weight:bold;border-bottom:1px solid #eee;padding:3px 
 .secbtns{font-size:15px;color:#999;font-weight:normal;display:flex;gap:8px;}
 .secbtns span{cursor:pointer;}
 .secbtns span:hover{color:var(--teal);}
-.info-paren{font-size:.78em !important;color:#222 !important;font-weight:400;} .sec-body{padding:10px 6px;font-size:19px;line-height:1.75;min-height:34px;outline:none;white-space:pre-wrap;}
+.info-paren{font-size:.78em !important;color:#222 !important;font-weight:400;} .birth-age{font-size:1em !important;color:#222 !important;font-weight:400;} .sec-body{padding:10px 6px;font-size:19px;line-height:1.75;min-height:34px;outline:none;white-space:pre-wrap;}
 .sec-body:empty:before{content:"내용을 입력하세요...";color:#aaa;}
 .collapsed{display:none;}
 .footnotes{margin-top:30px;border-top:1px solid var(--line);padding-top:10px;font-size:17px;color:#555;}
@@ -513,6 +513,28 @@ function addGallery(){
   renderGallery(document.getElementById('sections'), {title:title, items:[]});
   persist();
 }
+function updateBirthAge(td){
+  if(!td) return;
+  const raw=td.textContent.replace(/\\s+/g,' ').trim();
+  const m=raw.match(/(\\d{4})\\s*[년.\\/-]\\s*(\\d{1,2})\\s*[월.\\/-]\\s*(\\d{1,2})\\s*일?/);
+  if(!m) return;
+  const y=Number(m[1]), mo=Number(m[2]), d=Number(m[3]);
+  const birth=new Date(y,mo-1,d);
+  if(birth.getFullYear()!==y || birth.getMonth()!==mo-1 || birth.getDate()!==d) return;
+
+  const today=new Date();
+  let age=today.getFullYear()-y;
+  if(today.getMonth()<mo-1 || (today.getMonth()===mo-1 && today.getDate()<d)) age--;
+
+  const dateText=y+'년 '+mo+'월 '+d+'일';
+  td.innerHTML='';
+  td.appendChild(document.createTextNode(dateText+' '));
+  const ageSpan=document.createElement('span');
+  ageSpan.className='birth-age';
+  ageSpan.textContent='('+age+'세)';
+  td.appendChild(ageSpan);
+}
+
 function styleInfoParentheses(td){
   if(!td) return;
   const walker=document.createTreeWalker(td,NodeFilter.SHOW_TEXT);
@@ -571,7 +593,7 @@ function renderInfoTable(info, optOn){
     } else {
       td=document.createElement('td'); td.contentEditable=true; td.dataset.key=f.key;
       if(f.blue) td.classList.add('v-blue');
-      td.innerHTML = info[f.key] || ''; styleInfoParentheses(td);
+      td.innerHTML = info[f.key] || ''; if(f.key==='birth') updateBirthAge(td); else styleInfoParentheses(td);
     }
     tr.appendChild(th); tr.appendChild(td); table.appendChild(tr);
   });
@@ -604,7 +626,7 @@ document.getElementById('fileInput').addEventListener('change', function(e){
 function collectFromDOM(){
   const prevInfo=(getDoc()&&getDoc().info)||{};
   const info=Object.assign({}, prevInfo);
-  document.querySelectorAll('#infoTable td[data-key]').forEach(td=>{ styleInfoParentheses(td); info[td.dataset.key]=td.innerHTML; });
+  document.querySelectorAll('#infoTable td[data-key]').forEach(td=>{ if(td.dataset.key==='birth') updateBirthAge(td); else styleInfoParentheses(td); info[td.dataset.key]=td.innerHTML; });
   const optOn=getDoc()?Object.assign({},getDoc().optOn):{};
   const img=document.querySelector('#photoBox img');
   const secs=[]; const galleries=[];
@@ -728,7 +750,7 @@ function doSearch(q){
 function clearSearch(){ document.getElementById('searchBox').value=''; doSearch(''); }
 
 document.addEventListener('input', (e)=>{
-  if(e.target.closest('#infoTable td[data-key]')) styleInfoParentheses(e.target);
+  if(e.target.closest('#infoTable td[data-key]')) { const td=e.target.closest('#infoTable td[data-key]'); if(td.dataset.key==='birth') updateBirthAge(td); else styleInfoParentheses(td); }
 
   if(e.target.closest('[contenteditable]')){
     clearTimeout(window._t); window._t=setTimeout(persist, 700);
