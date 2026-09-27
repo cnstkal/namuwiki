@@ -544,43 +544,46 @@ function updateBirthAge(td){
 
 function styleInfoParentheses(td){
   if(!td) return;
+
   if(td.dataset.key==='edu'){
-    const raw=td.textContent.replace(/\\u00a0/g,' ').trim();
-    let lines=raw.split(/(?:\\n|<br\\s*\\/?>)/i).map(s=>s.trim()).filter(Boolean);
-    if(!lines.length) lines=['초등학교'];
+    // 이미 정상적인 학력 구조라면 입력 중에는 절대 다시 만들지 않는다.
+    if(td.querySelector('.edu-line')) return;
+
+    const raw=td.textContent.trim();
+    let school=raw;
+    let status='졸업';
+
+    const open=raw.lastIndexOf('(');
+    const close=raw.lastIndexOf(')');
+    if(open>=0 && close>open){
+      school=raw.slice(0,open).trim();
+      status=raw.slice(open+1,close).trim() || '졸업';
+    }
+
+    // 이전 버전에서 중복 생성된 학력 데이터는 정상 기본값으로 정리
+    if(!school || school.indexOf('초등')>=0) school='초등학교';
 
     td.innerHTML='';
-    lines.forEach(line=>{
-      const m=line.match(/^(.*?)(?:\\s*[（(]([^（）()]*)[）)])?$/);
-      let school=(m&&m[1]?m[1]:'').trim();
-      let status=(m&&m[2]!==undefined?m[2]:'').trim();
 
-      // 이전 버전에서 입력 중 자동 재구성되어 중복된 초등학교/괄호가 저장된 경우 정리
-      school=school.replace(/(?:초등학교?)+$/g,'초등학교');
-      if(!school) school='초등학교';
-      if(!status) status='졸업';
+    const lineWrap=document.createElement('div');
+    lineWrap.className='edu-line';
 
-      const lineWrap=document.createElement('div');
-      lineWrap.className='edu-line';
+    const schoolSpan=document.createElement('span');
+    schoolSpan.className='edu-school';
+    schoolSpan.contentEditable='true';
+    schoolSpan.textContent=school;
 
-      const schoolSpan=document.createElement('span');
-      schoolSpan.className='edu-school';
-      schoolSpan.contentEditable='true';
-      schoolSpan.textContent=school;
+    const statusSpan=document.createElement('span');
+    statusSpan.className='edu-status';
+    statusSpan.contentEditable='true';
+    statusSpan.textContent=status;
 
-      const open=document.createTextNode(' (');
-      const statusSpan=document.createElement('span');
-      statusSpan.className='edu-status';
-      statusSpan.contentEditable='true';
-      statusSpan.textContent=status;
-      const close=document.createTextNode(')');
+    lineWrap.appendChild(schoolSpan);
+    lineWrap.appendChild(document.createTextNode(' ('));
+    lineWrap.appendChild(statusSpan);
+    lineWrap.appendChild(document.createTextNode(')'));
+    td.appendChild(lineWrap);
 
-      lineWrap.appendChild(schoolSpan);
-      lineWrap.appendChild(open);
-      lineWrap.appendChild(statusSpan);
-      lineWrap.appendChild(close);
-      td.appendChild(lineWrap);
-    });
     td.contentEditable='false';
     return;
   }
@@ -589,28 +592,40 @@ function styleInfoParentheses(td){
   const nodes=[]; let n;
   while(n=walker.nextNode()){
     if(n.parentElement && n.parentElement.classList.contains('info-paren')) continue;
-    if(/[（(]/.test(n.textContent)) nodes.push(n);
+    if(n.textContent.indexOf('(')>=0 || n.textContent.indexOf('（')>=0) nodes.push(n);
   }
+
   nodes.forEach(node=>{
     const text=node.textContent;
-    const re=/(\\([^()]*\\)|（[^（）]*）)/g;
-    let m, last=0, found=false;
     const frag=document.createDocumentFragment();
-    while((m=re.exec(text))){
-      found=true;
-      if(m.index>last) frag.appendChild(document.createTextNode(text.slice(last,m.index)));
+    let pos=0;
+    while(pos<text.length){
+      const a=text.indexOf('(',pos);
+      const b=text.indexOf('（',pos);
+      let open=a<0?b:(b<0?a:Math.min(a,b));
+      if(open<0){
+        frag.appendChild(document.createTextNode(text.slice(pos)));
+        break;
+      }
+      if(open>pos) frag.appendChild(document.createTextNode(text.slice(pos,open)));
+
+      const close1=text.indexOf(')',open+1);
+      const close2=text.indexOf('）',open+1);
+      let close=close1<0?close2:(close2<0?close1:Math.min(close1,close2));
+      if(close<0){
+        frag.appendChild(document.createTextNode(text.slice(open)));
+        break;
+      }
+
       const span=document.createElement('span');
       span.className='info-paren';
-      span.textContent=m[0];
+      span.textContent=text.slice(open,close+1);
       frag.appendChild(span);
-      last=re.lastIndex;
+      pos=close+1;
     }
-    if(!found) return;
-    if(last<text.length) frag.appendChild(document.createTextNode(text.slice(last)));
     node.parentNode.replaceChild(frag,node);
   });
 }
-
 
 
 function renderInfoTable(info, optOn){
