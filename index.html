@@ -49,7 +49,9 @@ h3.sub{font-size:22px;font-weight:bold;border-bottom:1px solid #eee;padding:3px 
 .secbtns span+span{display:none;}
 .sec-body{padding:14px 0 18px;font-size:19px;line-height:1.9;min-height:34px;outline:none;white-space:pre-wrap;}
 .info-paren{font-size:.78em !important;color:#222 !important;font-weight:400;} .name-full{font-size:1em !important;color:inherit !important;font-weight:inherit;} .edu-line{display:block;line-height:1.45;} .edu-school,.edu-status{outline:none;} .edu-school{color:inherit;} .edu-status{font-size:.78em;color:#222;} .birth-age-wrap{color:#222 !important;font-size:1em !important;font-weight:400;} .birth-age-wrap .birth-age{font-size:1em !important;color:#222 !important;font-weight:400;} .sec-body{padding:10px 6px;font-size:19px;line-height:1.75;min-height:34px;outline:none;white-space:pre-wrap;}
-.sec-body:empty:before{content:"내용을 입력하세요...";color:#aaa;}
+.sec-body:empty:before{content:"내용을 입력하세요...";color:#aaa;}\n.sec-body .body-line{display:block;position:relative;padding-left:28px;min-height:1.9em;}
+.sec-body .body-line::before{content:"•";position:absolute;left:6px;top:0;font-weight:700;}
+
 .collapsed{display:none;}
 .footnotes{margin-top:30px;border-top:1px solid var(--line);padding-top:10px;font-size:17px;color:#555;}
 .gallery{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;}
@@ -656,6 +658,29 @@ function renderInfoTable(info, optOn){
     tr.appendChild(th); tr.appendChild(td); table.appendChild(tr);
   });
 }
+document.addEventListener('keydown',(e)=>{
+  if(e.key!=='Enter') return;
+  const body=e.target.closest('.sec-body');
+  if(!body) return;
+
+  e.preventDefault();
+  const line=document.createElement('div');
+  line.className='body-line';
+  line.innerHTML='<br>';
+
+  const current=e.target.closest('.body-line');
+  if(current) current.after(line);
+  else body.appendChild(line);
+
+  const range=document.createRange();
+  range.selectNodeContents(line);
+  range.collapse(true);
+  const sel=window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+  persist();
+});
+
 function renderOptToggleBar(optOn){
   const bar=document.getElementById('optToggleBar');
   bar.innerHTML='선택 항목:';
