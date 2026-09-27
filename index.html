@@ -38,12 +38,16 @@ table.info td{padding:9px 10px;border-bottom:1px solid var(--line);background:#f
 .rowbtns{display:flex;gap:4px;justify-content:center;padding:4px;background:var(--panel);}
 .rowbtns button{font-size:10px;padding:2px 5px;cursor:pointer;}
 article{clear:both;}
-h2.sec{font-size:26px;font-weight:bold;border-bottom:2px solid var(--orange);padding:4px 2px;margin-top:26px;display:flex;justify-content:space-between;align-items:center;}
+#sections{counter-reset:section;}
+h2.sec{font-size:32px;font-weight:800;color:#202124;border-bottom:2px solid #ddd;padding:8px 0 10px;margin:38px 0 0;display:flex;justify-content:flex-start;align-items:center;gap:14px;line-height:1.2;}
+h2.sec .txt::before{counter-increment:section;content:counter(section) ". ";color:#1976d2;font-weight:800;}
 h3.sub{font-size:22px;font-weight:bold;border-bottom:1px solid #eee;padding:3px 2px;margin-top:16px;display:flex;justify-content:space-between;align-items:center;color:#333;}
 .txt[contenteditable]{outline:none;}
-.secbtns{font-size:15px;color:#999;font-weight:normal;display:flex;gap:8px;}
+.secbtns{font-size:30px;color:#666;font-weight:normal;display:flex;gap:8px;order:-1;flex:0 0 auto;line-height:1;}
 .secbtns span{cursor:pointer;}
-.secbtns span:hover{color:var(--teal);}
+.secbtns span:hover{color:#333;}
+.secbtns span+span{display:none;}
+.sec-body{padding:14px 0 18px;font-size:19px;line-height:1.9;min-height:34px;outline:none;white-space:pre-wrap;}
 .info-paren{font-size:.78em !important;color:#222 !important;font-weight:400;} .name-full{font-size:1em !important;color:inherit !important;font-weight:inherit;} .edu-line{display:block;line-height:1.45;} .edu-school,.edu-status{outline:none;} .edu-school{color:inherit;} .edu-status{font-size:.78em;color:#222;} .birth-age-wrap{color:#222 !important;font-size:1em !important;font-weight:400;} .birth-age-wrap .birth-age{font-size:1em !important;color:#222 !important;font-weight:400;} .sec-body{padding:10px 6px;font-size:19px;line-height:1.75;min-height:34px;outline:none;white-space:pre-wrap;}
 .sec-body:empty:before{content:"내용을 입력하세요...";color:#aaa;}
 .collapsed{display:none;}
@@ -443,13 +447,11 @@ function renderSection(wrap, s){
   const h=document.createElement(tag); h.className = s.lvl===3?'sub':'sec';
   const t=document.createElement('span'); t.className='txt'; t.contentEditable=true; t.textContent=s.title;
   const btns=document.createElement('span'); btns.className='secbtns';
-  const foldBtn=document.createElement('span'); foldBtn.textContent='▾';
-  const delBtn=document.createElement('span'); delBtn.textContent='삭제';
-  btns.appendChild(foldBtn); btns.appendChild(delBtn);
-  h.appendChild(t); h.appendChild(btns);
+  const foldBtn=document.createElement('span'); foldBtn.textContent='⌄';
+  btns.appendChild(foldBtn);
+  h.appendChild(btns); h.appendChild(t);
   const b=document.createElement('div'); b.className='sec-body'; b.contentEditable=true; b.innerHTML=s.body||'';
-  foldBtn.onclick=(e)=>{e.stopPropagation(); b.classList.toggle('collapsed'); foldBtn.textContent = b.classList.contains('collapsed')?'▸':'▾';};
-  delBtn.onclick=(e)=>{e.stopPropagation(); if(confirm('이 문단을 삭제할까요?')){h.remove(); b.remove(); persist();}};
+  foldBtn.onclick=(e)=>{e.stopPropagation(); b.classList.toggle('collapsed'); foldBtn.textContent = b.classList.contains('collapsed')?'›':'⌄';};
   wrap.appendChild(h); wrap.appendChild(b);
 }
 
