@@ -126,6 +126,24 @@ table.info tr.opt-row.on{display:table-row;}
 .toc-body .lv3{padding-left:12px;font-size:15px;color:#555;}
 .toc-wrap.closed .toc-body{display:none;}
 .ic{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px;}
+
+@media(max-width:750px){
+  #captureArea{display:flex;flex-direction:column;}
+  #captureArea .titleline{order:1;}
+  #captureArea .pagebar{order:2;}
+  #captureArea .catbar{order:3;}
+  #captureArea .lockline{order:4;}
+  #captureArea .navwrap{order:5;}
+  #captureArea #optToggleBar{order:6;}
+  #captureArea .infobox{order:7;}
+  #captureArea .toc-wrap{order:8;}
+  #captureArea > div[style*="clear:both"]{order:9;}
+  #captureArea #sections{order:10;}
+  #captureArea .addbar{order:11;}
+  #captureArea .footnotes{order:12;}
+  #captureArea .infobox{float:none;width:100%;margin:0 0 16px;}
+  #captureArea .toc-wrap{float:none;width:100%;margin:0 0 18px;}
+}
 </style>
 </head>
 <body>
