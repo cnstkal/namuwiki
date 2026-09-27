@@ -43,7 +43,7 @@ h3.sub{font-size:22px;font-weight:bold;border-bottom:1px solid #eee;padding:3px 
 .secbtns{font-size:15px;color:#999;font-weight:normal;display:flex;gap:8px;}
 .secbtns span{cursor:pointer;}
 .secbtns span:hover{color:var(--teal);}
-.info-paren{font-size:.78em !important;color:#222 !important;font-weight:400;} .edu-status{font-size:.78em;color:#222;outline:none;} .edu-school{outline:none;} .birth-age-wrap{color:#222 !important;font-size:1em !important;font-weight:400;} .birth-age-wrap .birth-age{font-size:1em !important;color:#222 !important;font-weight:400;} .sec-body{padding:10px 6px;font-size:19px;line-height:1.75;min-height:34px;outline:none;white-space:pre-wrap;}
+.info-paren{font-size:.78em !important;color:#222 !important;font-weight:400;} .edu-line{display:block;line-height:1.45;} .edu-school,.edu-status{outline:none;} .edu-school{color:inherit;} .edu-status{font-size:.78em;color:#222;} .birth-age-wrap{color:#222 !important;font-size:1em !important;font-weight:400;} .birth-age-wrap .birth-age{font-size:1em !important;color:#222 !important;font-weight:400;} .sec-body{padding:10px 6px;font-size:19px;line-height:1.75;min-height:34px;outline:none;white-space:pre-wrap;}
 .sec-body:empty:before{content:"내용을 입력하세요...";color:#aaa;}
 .collapsed{display:none;}
 .footnotes{margin-top:30px;border-top:1px solid var(--line);padding-top:10px;font-size:17px;color:#555;}
@@ -545,28 +545,43 @@ function updateBirthAge(td){
 function styleInfoParentheses(td){
   if(!td) return;
   if(td.dataset.key==='edu'){
-    const raw=td.textContent.replace(/\\u00a0/g,' ');
-    const lines=raw.split(/\\n/).map(s=>s.trim()).filter(Boolean);
+    const raw=td.textContent.replace(/\\u00a0/g,' ').trim();
+    let lines=raw.split(/(?:\\n|<br\\s*\\/?>)/i).map(s=>s.trim()).filter(Boolean);
+    if(!lines.length) lines=['초등학교'];
+
     td.innerHTML='';
-    lines.forEach((line,i)=>{
+    lines.forEach(line=>{
       const m=line.match(/^(.*?)(?:\\s*[（(]([^（）()]*)[）)])?$/);
-      const school=(m&&m[1]?m[1]:'').trim();
-      const status=(m&&m[2]!==undefined?m[2]:'').trim();
+      let school=(m&&m[1]?m[1]:'').trim();
+      let status=(m&&m[2]!==undefined?m[2]:'').trim();
+
+      // 이전 버전에서 입력 중 자동 재구성되어 중복된 초등학교/괄호가 저장된 경우 정리
+      school=school.replace(/(?:초등학교?)+$/g,'초등학교');
+      if(!school) school='초등학교';
+      if(!status) status='졸업';
+
+      const lineWrap=document.createElement('div');
+      lineWrap.className='edu-line';
+
       const schoolSpan=document.createElement('span');
       schoolSpan.className='edu-school';
       schoolSpan.contentEditable='true';
       schoolSpan.textContent=school;
-      td.appendChild(schoolSpan);
+
       const open=document.createTextNode(' (');
-      td.appendChild(open);
       const statusSpan=document.createElement('span');
       statusSpan.className='edu-status';
       statusSpan.contentEditable='true';
       statusSpan.textContent=status;
-      td.appendChild(statusSpan);
-      td.appendChild(document.createTextNode(')'));
-      if(i<lines.length-1) td.appendChild(document.createElement('br'));
+      const close=document.createTextNode(')');
+
+      lineWrap.appendChild(schoolSpan);
+      lineWrap.appendChild(open);
+      lineWrap.appendChild(statusSpan);
+      lineWrap.appendChild(close);
+      td.appendChild(lineWrap);
     });
+    td.contentEditable='false';
     return;
   }
 
@@ -626,7 +641,7 @@ function renderInfoTable(info, optOn){
       };
       td.appendChild(box);
     } else {
-      td=document.createElement('td'); td.contentEditable=true; td.dataset.key=f.key;
+      td=document.createElement('td'); td.contentEditable=f.key!=='edu'; td.dataset.key=f.key;
       if(f.blue) td.classList.add('v-blue');
       td.innerHTML = info[f.key] || ''; if(f.key==='birth') updateBirthAge(td); else styleInfoParentheses(td);
     }
@@ -785,28 +800,51 @@ function doSearch(q){
 function clearSearch(){ document.getElementById('searchBox').value=''; doSearch(''); }
 
 document.addEventListener('keydown',(e)=>{
+  if(e.key!=='Enter') return;
   const td=e.target.closest('#infoTable td[data-key]');
-  if(!td || td.dataset.key!=='edu' || e.key!=='Enter') return;
+  if(!td || td.dataset.key!=='edu' || !e.target.matches('.edu-school,.edu-status')) return;
+
   e.preventDefault();
-  const br=document.createElement('br');
+  const currentLine=e.target.closest('.edu-line');
+  if(!currentLine) return;
+
+  const lineWrap=document.createElement('div');
+  lineWrap.className='edu-line';
+
   const school=document.createElement('span');
   school.className='edu-school';
   school.contentEditable='true';
   school.textContent='초등학교';
-  const open=document.createTextNode(' (');
+
   const status=document.createElement('span');
   status.className='edu-status';
   status.contentEditable='true';
   status.textContent='졸업';
-  const close=document.createTextNode(')');
-  td.appendChild(br); td.appendChild(school); td.appendChild(open); td.appendChild(status); td.appendChild(close);
+
+  lineWrap.appendChild(school);
+  lineWrap.appendChild(document.createTextNode(' ('));
+  lineWrap.appendChild(status);
+  lineWrap.appendChild(document.createTextNode(')'));
+  currentLine.after(lineWrap);
+
   const range=document.createRange();
-  range.selectNodeContents(school); range.collapse(false);
-  const sel=window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+  range.selectNodeContents(school);
+  range.collapse(false);
+  const sel=window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
   persist();
 });
 document.addEventListener('input', (e)=>{
-  if(e.target.closest('#infoTable td[data-key]')) { const td=e.target.closest('#infoTable td[data-key]'); if(td.dataset.key==='birth') updateBirthAge(td); else styleInfoParentheses(td); }
+  if(e.target.closest('#infoTable td[data-key]')) {
+    const td=e.target.closest('#infoTable td[data-key]');
+    if(td.dataset.key==='birth') updateBirthAge(td);
+    else if(td.dataset.key!=='edu') styleInfoParentheses(td);
+    if(td.dataset.key==='edu') {
+      clearTimeout(window._eduPersist);
+      window._eduPersist=setTimeout(persist,700);
+    }
+  }
 
   if(e.target.closest('[contenteditable]')){
     clearTimeout(window._t); window._t=setTimeout(persist, 700);
