@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>자캐위키</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -144,6 +144,10 @@ table.info tr.opt-row.on{display:table-row;}
   #captureArea .infobox{float:none;width:100%;margin:0 0 16px;}
   #captureArea .toc-wrap{float:none;width:100%;margin:0 0 18px;}
 }
+
+/* iOS Safari: 입력/편집 시 자동 확대 방지 */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+input,textarea,select,[contenteditable="true"]{-webkit-text-size-adjust:100%;font-size:16px !important;}
 </style>
 </head>
 <body>
