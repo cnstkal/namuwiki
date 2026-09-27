@@ -43,7 +43,7 @@ h3.sub{font-size:22px;font-weight:bold;border-bottom:1px solid #eee;padding:3px 
 .secbtns{font-size:15px;color:#999;font-weight:normal;display:flex;gap:8px;}
 .secbtns span{cursor:pointer;}
 .secbtns span:hover{color:var(--teal);}
-.info-paren{font-size:.78em;color:#222;} .sec-body{padding:10px 6px;font-size:19px;line-height:1.75;min-height:34px;outline:none;white-space:pre-wrap;}
+.info-paren{font-size:.78em !important;color:#222 !important;font-weight:400;} .sec-body{padding:10px 6px;font-size:19px;line-height:1.75;min-height:34px;outline:none;white-space:pre-wrap;}
 .sec-body:empty:before{content:"내용을 입력하세요...";color:#aaa;}
 .collapsed{display:none;}
 .footnotes{margin-top:30px;border-top:1px solid var(--line);padding-top:10px;font-size:17px;color:#555;}
@@ -519,16 +519,15 @@ function styleInfoParentheses(td){
   const nodes=[]; let n;
   while(n=walker.nextNode()){
     if(n.parentElement && n.parentElement.classList.contains('info-paren')) continue;
-    if(/[\\(（]/.test(n.textContent)) nodes.push(n);
+    if(/[（(]/.test(n.textContent)) nodes.push(n);
   }
   nodes.forEach(node=>{
     const text=node.textContent;
-    const re=/(\\([^)]*\\)|（[^）]*）)/g;
-    if(!re.test(text)) return;
-    re.lastIndex=0;
+    const re=/(\\([^()]*\\)|（[^（）]*）)/g;
+    let m, last=0, found=false;
     const frag=document.createDocumentFragment();
-    let last=0, m;
-    while(m=re.exec(text)){
+    while((m=re.exec(text))){
+      found=true;
       if(m.index>last) frag.appendChild(document.createTextNode(text.slice(last,m.index)));
       const span=document.createElement('span');
       span.className='info-paren';
@@ -536,6 +535,7 @@ function styleInfoParentheses(td){
       frag.appendChild(span);
       last=re.lastIndex;
     }
+    if(!found) return;
     if(last<text.length) frag.appendChild(document.createTextNode(text.slice(last)));
     node.parentNode.replaceChild(frag,node);
   });
