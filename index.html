@@ -25,7 +25,7 @@ a{color:#3b7dd8;cursor:pointer;text-decoration:none;} a:hover{text-decoration:un
 .toc .lv3{padding-left:12px;font-size:12px;}
 .pagebar{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:10px;font-size:12px;color:#777;flex-wrap:wrap;gap:6px;}
 .pagebar button{font-size:11px;padding:3px 8px;border:1px solid var(--line);background:#fff;border-radius:4px;cursor:pointer;}
-.infobox{float:right;width:300px;margin:0 0 16px 14px;border:2px solid var(--orange);border-radius:4px;overflow:hidden;}
+.infobox{float:right;width:380px;margin:0 0 16px;border:2px solid var(--orange);border-radius:4px;overflow:hidden;}
 .ib-head{background:var(--orange);color:#fff;text-align:center;padding:10px;}
 .ib-head .ib-name{font-size:20px;font-weight:bold;}
 .ib-head .ib-sub{font-size:12px;font-weight:normal;opacity:.9;margin-top:2px;}
@@ -60,7 +60,7 @@ h3.sub{font-size:16px;font-weight:bold;border-bottom:1px solid #eee;padding:3px 
 .toolbar button:hover,.toolbar label:hover{background:var(--teal);}
 body{padding-bottom:58px;}
 mark.hl{background:#fff29e;}
-@media(max-width:700px){.toc-float{float:none;width:100%;margin:0 0 12px;} .infobox{float:none;width:100%;margin:0 0 12px;}}
+@media(max-width:750px){.toc-wrap,.infobox{float:none;width:100%;}}
 [contenteditable]:focus{background:#fff8e5;}
 
 /* top namu-wiki-like header */
@@ -97,41 +97,84 @@ table.info tr.opt-row.on{display:table-row;}
 .sig-box{width:100%;min-height:56px;max-height:56px;display:flex;align-items:center;justify-content:center;background:#fff;border:1px dashed var(--line);border-radius:3px;cursor:pointer;overflow:hidden;}
 .sig-box img{max-width:140px;max-height:52px;object-fit:contain;}
 .sig-box span{font-size:11px;color:#999;}
+
+/* ---- namu-wiki-like page grid ---- */
+.gnb .gnb-link{color:#fff;opacity:.9;font-size:13px;white-space:nowrap;}
+.gnb .gnb-link:hover{opacity:1;text-decoration:underline;}
+.gnb-user{width:26px;height:26px;border-radius:50%;background:#008f80;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.pagegrid{display:flex;max-width:1400px;margin:0 auto;gap:24px;padding:16px 16px 40px;align-items:flex-start;}
+.pagemain{flex:1;min-width:0;max-width:1000px;}
+.rightpanel{width:280px;flex-shrink:0;position:sticky;top:60px;}
+@media(max-width:1100px){.rightpanel{display:none;}}
+.rp-box{border:1px solid var(--line);border-radius:6px;margin-bottom:14px;overflow:hidden;background:#fff;}
+.rp-box h5{margin:0;padding:10px 12px;font-size:13px;background:#fafafa;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;}
+.rp-box ul{list-style:none;margin:0;padding:6px 0;}
+.rp-box li{padding:6px 12px;font-size:12.5px;display:flex;justify-content:space-between;color:#444;}
+.rp-box li b{color:#3b7dd8;font-weight:normal;margin-right:6px;}
+.rp-box li span.t{color:#aaa;font-size:11px;white-space:nowrap;}
+
+.titleline{justify-content:space-between;}
+.title-icons{display:flex;gap:12px;font-size:12.5px;color:#888;font-weight:normal;margin-left:auto;}
+.title-icons span{cursor:pointer;white-space:nowrap;}
+.title-icons span:hover{color:var(--teal);}
+
+.toc-wrap{float:left;width:330px;box-sizing:border-box;border:1px solid var(--line);border-radius:4px;background:var(--panel);margin:0 0 18px;}
+.toc-wrap .toc-hd{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:8px 12px;font-weight:bold;font-size:14px;cursor:pointer;}
+.toc-wrap .toc-hd:hover{background:#f0f0f0;}
+.toc-body{padding:0 12px 10px;font-size:13px;}
+.toc-body div{margin:3px 0;}
+.toc-body .lv3{padding-left:12px;font-size:12px;color:#555;}
+.toc-wrap.closed .toc-body{display:none;}
+.ic{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px;}
 </style>
 </head>
 <body>
+<svg style="display:none">
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M4 4h11a3 3 0 0 1 3 3v13H7a3 3 0 0 1-3-3V4z"/><path d="M4 4v13a3 3 0 0 0 3 3h11"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14l-5-4.87 6.91-1.01z"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></symbol>
+<symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 4h16v12H8l-4 4z"/></symbol>
+<symbol id="i-history" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l4 2"/></symbol>
+<symbol id="i-more" viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="19" cy="12" r="1.4"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+<symbol id="i-unlock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></symbol>
+<symbol id="i-building" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18"/><path d="M9 21v-4h6v4M8 7h2M14 7h2M8 11h2M14 11h2M8 15h2M14 15h2"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></symbol>
+<symbol id="i-close" viewBox="0 0 24 24"><path d="M5 5l14 14M19 5L5 19"/></symbol>
+</svg>
 <div class="gnb">
-  <span class="logo">📖 자캐위키</span>
+  <span class="logo"><svg class="ic" style="width:16px;height:16px;"><use href="#i-book"/></svg> 자캐위키</span>
+  <a class="gnb-link">최근 변경</a>
+  <a class="gnb-link">최근 토론</a>
+  <a class="gnb-link">특수 기능 ▾</a>
   <select class="charselect" id="charSelect" onchange="switchChar(this.value)"></select>
   <button onclick="newChar()">+ 새 문서</button>
   <input id="searchBox" placeholder="문서 내 검색" oninput="doSearch(this.value)">
-  <button onclick="clearSearch()">✕</button>
+  <button onclick="clearSearch()"><svg class="ic"><use href="#i-close"/></svg></button>
+  <span class="gnb-user"><svg class="ic" style="stroke:#fff;"><use href="#i-user"/></svg></span>
 </div>
 
-<div class="layout">
-  <div class="sidebar">
-    <h4>목차</h4>
-    <div class="toc" id="toc"></div>
-  </div>
-
-  <div class="wrap">
-    <div class="pagebar">
-      <span id="editedAt">최근 수정 시각: -</span>
-      <div style="display:flex;gap:6px;">
-        <button onclick="toggleLock()" id="lockBtn">🔓 편집 가능</button>
-        <button onclick="if(confirm('이 문서를 삭제할까요?'))deleteChar()">문서 삭제</button>
-      </div>
-    </div>
-
-    <div style="max-width:900px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:0 4px 8px;">
-      <div id="optToggleBar" style="font-size:12px;color:#777;display:flex;gap:6px;flex-wrap:wrap;">선택 항목:</div>
-      <button onclick="toggleNbLinks()" id="nbToggleBtn" style="font-size:12px;padding:5px 10px;border:1px solid var(--line);background:#fff;border-radius:4px;cursor:pointer;">⌄ 음반 목록 보기</button>
-    </div>
-
+<div class="pagegrid">
+  <div class="pagemain">
     <article id="captureArea">
-      <div class="titleline"><span class="txt" contenteditable id="pageTitle">문서 제목</span></div>
+      <div class="titleline">
+        <span class="txt" contenteditable id="pageTitle">문서 제목</span>
+        <span class="num">50</span>
+        <span class="title-icons">
+          <span><svg class="ic"><use href="#i-star"/></svg></span><span><svg class="ic"><use href="#i-user"/></svg> 편집 요청</span><span><svg class="ic"><use href="#i-chat"/></svg> 토론</span><span><svg class="ic"><use href="#i-history"/></svg> 역사</span><span><svg class="ic"><use href="#i-more"/></svg></span>
+        </span>
+      </div>
+
+      <div class="pagebar">
+        <span id="editedAt">최근 수정 시각: -</span>
+        <div style="display:flex;gap:6px;">
+          <button onclick="toggleLock()" id="lockBtn"><svg class="ic"><use href="#i-unlock"/></svg> 편집 가능</button>
+          <button onclick="if(confirm('이 문서를 삭제할까요?'))deleteChar()">문서 삭제</button>
+        </div>
+      </div>
+
       <div class="catbar" id="catbar"><span style="color:#555;">분류:</span> <b contenteditable style="color:#3b7dd8;">원빈(RIIZE)</b><span class="sep">|</span><b contenteditable style="color:#3b7dd8;">RIIZE</b><span class="sep">|</span><b contenteditable style="color:#3b7dd8;">한국 남가수</b><span class="sep">|</span><b contenteditable style="color:#3b7dd8;">2002년 출생</b></div>
-      <div class="lockline"><span class="ico" id="lockIco">🔒</span><span id="lockText">편집 보호된 문서입니다.</span></div>
+      <div class="lockline"><span class="ico" id="lockIco"><svg class="ic"><use href="#i-lock"/></svg></span><span id="lockText">편집 보호된 문서입니다.</span></div>
 
       <div class="navwrap" id="navwrap">
         <div class="navbox">
@@ -145,18 +188,29 @@ table.info tr.opt-row.on{display:table-row;}
         </div>
       </div>
 
-      <div class="namebar">
-        <div contenteditable id="charname">이름을 입력하세요</div>
-        <div class="sub" contenteditable id="charname-en">별칭 / 영문명 / 부제</div>
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0 0 6px;">
+        <div id="optToggleBar" style="font-size:12px;color:#777;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">선택 항목:</div>
+        <button onclick="toggleNbLinks()" id="nbToggleBtn" style="font-size:12px;padding:5px 10px;border:1px solid var(--line);background:#fff;border-radius:4px;cursor:pointer;">⌄ 음반 목록 보기</button>
+      </div>
+
+      <div class="toc-wrap" id="tocWrap">
+        <div class="toc-hd" onclick="toggleToc()"><span>목차</span><span id="tocChevron">⌄</span></div>
+        <div class="toc-body" id="toc"></div>
       </div>
 
       <div class="infobox">
+        <div class="ib-head">
+          <div class="ib-name txt" contenteditable id="charname">이름을 입력하세요</div>
+          <div class="ib-sub txt" contenteditable id="charname-en">별칭 / 영문명 / 부제</div>
+        </div>
         <div class="photo" id="photoBox" onclick="document.getElementById('fileInput').click()">
           <span style="color:#999;font-size:13px;">클릭해서 사진 업로드</span>
         </div>
         <input type="file" id="fileInput" accept="image/*" style="display:none">
         <table class="info" id="infoTable"></table>
       </div>
+
+      <div style="clear:both;"></div>
 
       <div id="sections"></div>
 
@@ -170,6 +224,21 @@ table.info tr.opt-row.on{display:table-row;}
         <div id="fnlist" contenteditable style="margin-top:6px;"></div>
       </div>
     </article>
+  </div>
+
+  <div class="rightpanel">
+    <div class="rp-box">
+      <h5><svg class="ic"><use href="#i-building"/></svg> 실시간 검색어</h5>
+      <ul>
+        <li><span><b>1</b>안세영</span><span class="t">NEW</span></li>
+      </ul>
+    </div>
+    <div class="rp-box">
+      <h5><svg class="ic"><use href="#i-clock"/></svg> 최근 변경</h5>
+      <ul>
+        <li><span>문서 편집 내역이 여기 표시돼요</span></li>
+      </ul>
+    </div>
   </div>
 </div>
 
@@ -290,8 +359,8 @@ function deleteChar(){
 function toggleLock(){ locked=!locked; applyLock(); persist(); }
 function applyLock(){
   document.querySelectorAll('[contenteditable]').forEach(el=>el.contentEditable=!locked);
-  document.getElementById('lockBtn').textContent = locked? '🔒 편집 보호됨(클릭 해제)':'🔓 편집 가능';
-  document.getElementById('lockIco').textContent = locked? '🔒':'🔓';
+  document.getElementById('lockBtn').innerHTML = locked? '<svg class="ic"><use href="#i-lock"/></svg> 편집 보호됨(클릭 해제)':'<svg class="ic"><use href="#i-unlock"/></svg> 편집 가능';
+  document.getElementById('lockIco').innerHTML = '<svg class="ic"><use href="#i-lock"/></svg>';
 }
 
 function getDoc(){ const list=loadList(); return list[currentId]; }
@@ -332,6 +401,11 @@ function render(){
   buildTOC();
 }
 
+function toggleToc(){
+  const el=document.getElementById('tocWrap');
+  el.classList.toggle('closed');
+  document.getElementById('tocChevron').textContent = el.classList.contains('closed') ? '⌃' : '⌄';
+}
 function toggleNbLinks(){
   const el=document.getElementById('nbLinks');
   el.classList.toggle('show');
